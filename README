@@ -34,6 +34,8 @@ Usage is pretty easy:
     nagios-api -p 8080 -c /var/lib/nagios3/rw/nagios.cmd \
         -s /var/cache/nagios3/status.dat -l /var/log/nagios3/nagios.log
 
+    nagios-api -p 8080 -g /etc/nagios/nagios.cfg
+
 You must at least provide the status file options. If you don't provide
 the other options, then we will disable that functionality and error to
 clients who request it.
@@ -90,6 +92,12 @@ Bind to ADDR for HTTP requests (defaults to all interfaces).
 Use 'FILE' to write commands to Nagios. This is where external
 commands are sent. If your Nagios installation does not allow
 external commands, do not set this option.
+
+    -g, --config=FILE
+
+Use 'FILE' to specify the location of the nagios.cfg configuration
+file which specifies all the required arguments
+
 
     -s, --status-file=FILE
 
