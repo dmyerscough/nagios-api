@@ -3,6 +3,8 @@
 # core Nagios classes.
 #
 
+import collections
+
 class Nagios:
     '''This class represents the current state of a Nagios installation, as read
     from the status file that Nagios maintains.
@@ -102,6 +104,18 @@ class Nagios:
         if host not in self.services or service not in self.services[host]:
             return None
         return self.services[host][service]
+
+    def problems(self):
+      '''Return a list of all services that are currently reporting problems '''
+
+      issues = collections.defaultdict(dict)
+
+      for host in self.hosts:
+        for svc in self.services[host].keys():
+          if int(self.services[host][svc].current_state) != 0 and int(self.services[host][svc].current_attempt) == int(self.services[host][svc].max_attempts):
+            issues[host][svc] = self.services[host][svc].for_json()
+
+      return issues
 
     def for_json(self):
         '''Given a Nagios state object, return a pruned down dict that is

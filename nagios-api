@@ -95,6 +95,16 @@ def http_state(req, objid, reqobj):
         return json_error(req, 'Unexpected object ID.')
     return json_response(req, NAGIOS.for_json())
 
+def http_problems(req, objid, reqobj):
+    '''Get a host->service mapping reutn of all problem services
+
+    '''
+    global NAGIOS
+
+    if objid is not None:
+        return json_error(req, 'Unexpected object ID.')
+    return json_response(req, NAGIOS.problems())
+
 
 def http_objects(req, objid, reqobj):
     '''Get a host->service mapping. Does not return any data about what
@@ -711,6 +721,7 @@ def http_handler(req):
             'add_comment': http_add_comment,
             'delete_comment': http_delete_comment,
             'schedule_check': http_schedule_check,
+            'problems': http_problems,
         }
     }
 
