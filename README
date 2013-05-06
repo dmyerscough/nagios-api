@@ -98,6 +98,20 @@ external commands, do not set this option.
 Use 'FILE' to specify the location of the nagios.cfg configuration
 file which specifies all the required arguments
 
+    -t, --template=DIRECTORY
+
+Use 'DIRECTORY' to specify the location of the template files that
+will allow you to dynamically add hosts to Nagios
+
+   -i, --nagios-init=FILE
+
+Use 'FILE' to specify the Nagios initalization script so Nagios can
+be reloaded
+
+    --host-config=DIRECTORY
+
+Use 'DIRECTORY' to specify the Nagios hosts directory where you would
+like host configurations to be written to.
 
     -s, --status-file=FILE
 
@@ -194,6 +208,31 @@ include whatever you want and is visible in the Nagios UI and API output.
     Optional. The name of the author. This is useful in UIs if you want
     to disambiguate who is doing what.
 
+add
+~~~
+For a new host to be added to Nagios dynamically, the arguments are dependant on
+the template you define. A simple template is as follows:
+
+filename: app.cfg
+
+define host {
+    use		generic-host
+    host_name	|host_name|
+    alias	|alias|
+    address	|address|
+    hostgroup	|hostgroup|
+    register    1
+}
+
+The following cURL command will add a host that matches the above template:
+
+curl -H "Content-Type: application/json" -X POST -d \
+        '{"funct": "app", "host_name": "damian-workstation", \
+        "alias": "testing", "address": "127.0.0.1", "hostgroup": "LINUX" }' http://localhost:8080/add
+
+ *funct*='STRING' [required]::
+      This is the name of the template file without the .cfg file extention
+
 cancel_downtime
 ~~~~~~~~~~~~~~~
 Very simply, this immediately lifts a downtime that is currently in
@@ -266,12 +305,6 @@ objects
 Returns a dict with the key being hostnames and the values being a list
 of services defined for that host. Use this method to get the contents
 of the world -- i.e., all hosts and services.
-
-problems
-~~~~~~~~
-This method will display list hosts and their services that are reporting
-problems.
-
 
 remove_acknowledgement
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -346,12 +379,24 @@ We do not have the ability to get the `downtime_id` that is generated,
 unfortunately, as that would require waiting for Nagios to regenerate
 the status file.
 
+problems
+~~~~~~~~
+This method will display list hosts and their services that are reporting
+problems.
+
+reload
+~~~~~~
+This method takes no parameters and will causes Nagios to do a configuration
+check. If the Nagios configuration file contains no errors the Nagios daemon
+will be reloaded
+
 state
 ~~~~~
 This method takes no parameters. It returns a large JSON object
 containing all of the active state from Nagios. Included are all hosts,
 services, downtimes, comments, and other things that may be in the
 global state object.
+
 
 submit_result
 ~~~~~~~~~~~~~
