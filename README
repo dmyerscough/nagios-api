@@ -267,6 +267,12 @@ Returns a dict with the key being hostnames and the values being a list
 of services defined for that host. Use this method to get the contents
 of the world -- i.e., all hosts and services.
 
+problems
+~~~~~~~~
+This method will display list hosts and their services that are reporting
+problems.
+
+
 remove_acknowledgement
 ~~~~~~~~~~~~~~~~~~~~~~
 This method cancels an acknowledgement on a host or service.
